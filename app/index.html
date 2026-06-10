@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HELLSTAR</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --black: #050505;
+  --white: #ffffff;
+  --gray: #8a8a8a;
+  --accent: #c8b8ff;
+  --accent-dim: rgba(200,184,255,0.12);
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+
+body {
+  background: var(--black);
+  color: white;
+  overflow-x: hidden;
+  font-family: 'Inter', sans-serif;
+  cursor: none;
+}
+
+/* ── CUSTOM CURSOR ── */
+#cursor {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  background: white;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%,-50%);
+  transition: transform 0.1s ease, width 0.25s ease, height 0.25s ease, opacity 0.25s ease;
+  mix-blend-mode: difference;
+}
+
+#cursor-ring {
+  position: fixed;
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(255,255,255,0.4);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%,-50%);
+  transition: transform 0.18s ease, width 0.3s ease, height 0.3s ease, border-color 0.3s ease;
+}
+
+body:has(a:hover) #cursor-ring,
+body:has(button:hover) #cursor-ring {
+  width: 56px;
+  height: 56px;
+  border-color: rgba(200,184,255,0.7);
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #0a0a0a; }
+::-webkit-scrollbar-thumb { background: #222; border-radius: 2px; }
+
+/* ── STARS BACKGROUND ── */
+.stars {
+  position: fixed;
+  inset: 0;
+  z-index: -5;
+  overflow: hidden;
+}
+
+.star {
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  animation: twinkle 5s infinite alternate;
+}
+
+@keyframes twinkle {
+  from { opacity: 0.15; }
+  to { opacity: 0.9; }
+}
+
+/* ── SHOOTING STARS ── */
+.shooting-star {
+  position: absolute;
+  width: 1px;
+  height: 90px;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.9), transparent);
+  transform: rotate(45deg);
+  animation: shoot 4s linear infinite;
+}
+
+@keyframes shoot {
+  0%   { transform: translateX(-200px) translateY(-200px) rotate(45deg); opacity: 0; }
+  10%  { opacity: 1; }
+  100% { transform: translateX(1800px) translateY(1800px) rotate(45deg); opacity: 0; }
+}
+
+/* ── NAVBAR ── */
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+  transition: 0.4s ease;
+}
+
+.nav-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-scrolled {
+  background: rgba(5,5,5,0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.logo-font { font-family: 'Space Grotesk', sans-serif; }
+
+.nav-links {
+  display: flex;
+  gap: 40px;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: rgba(255,255,255,0.55);
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.25s;
+  cursor: none;
+}
+
+.nav-links a:hover { color: white; }
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.cart-btn {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  padding: 10px 24px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: transparent;
+  color: rgba(255,255,255,0.7);
+  cursor: none;
+  transition: all 0.3s ease;
+}
+
+.cart-btn:hover {
+  border-color: rgba(255,255,255,0.4);
+  color: white;
+  background: rgba(255,255,255,0.04);
+}
+
+/* ── HERO ── */
+.hero {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 40%, #161616 0%, #050505 65%);
+}
+
+.nebula {
+  position: absolute;
+  width: 1400px;
+  height: 1400px;
+  background: radial-gradient(circle, rgba(200,184,255,0.04), transparent 65%);
+  filter: blur(100px);
+  animation: nebulaMove 30s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes nebulaMove {
+  0%   { transform: translate(-8%,-8%) rotate(0deg); }
+  50%  { transform: translate(8%,8%) rotate(180deg); }
+  100% { transform: translate(-8%,-8%) rotate(360deg); }
+}
+
+.hero-content {
+  text-align: center;
+  padding: 0 24px;
+  z-index: 10;
+  position: relative;
+}
+
+.hero-eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.35em;
+  color: rgba(200,184,255,0.6);
+  margin-bottom: 28px;
+  font-weight: 400;
+}
+
+.hero-logo {
+  font-size: clamp(5rem, 16vw, 15rem);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 0.88;
+  color: white;
+  text-shadow:
+    0 0 40px rgba(255,255,255,0.25),
+    0 0 120px rgba(200,184,255,0.08);
+  animation: pulseLogo 7s ease-in-out infinite;
+     user-select: none;
+}
+
+@keyframes pulseLogo {
+  0%,100% { opacity: 0.88; }
+  50%      { opacity: 1; }
+}
+
+.hero-sub {
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  color: rgba(255,255,255,0.35);
+  margin-top: 20px;
+  font-weight: 300;
+}
+
+.hero-actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 52px;
+  flex-wrap: wrap;
+}
+
+/* ── BUTTONS ── */
+.hell-btn {
+  position: relative;
+  overflow: hidden;
+  padding: 14px 36px;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  font-weight: 500;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.8);
+  cursor: none;
+  transition: all 0.35s ease;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.hell-btn:hover {
+  border-color: rgba(200,184,255,0.45);
+  color: white;
+  background: rgba(200,184,255,0.06);
+  box-shadow: 0 8px 32px rgba(200,184,255,0.1);
+  transform: translateY(-3px);
+}
+
+.hell-btn::before {
+  content: "";
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.07), transparent);
+  transition: 0.6s;
+}
+
+.hell-btn:hover::before { left: 100%; }
+
+.hell-btn-primary {
+  background: white;
+  color: black;
+  border-color: white;
+}
+
+.hell-btn-primary:hover {
+  background: rgba(255,255,255,0.9);
+  color: black;
+  border-color: white;
+  box-shadow: 0 8px 32px rgba(255,255,255,0.2);
+}
+
+/* ── CENTRAL STAR ── */
+.central-star {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: white;
+  transform: translate(-50%,-50%);
+  box-shadow: 0 0 20px #fff, 0 0 60px #fff, 0 0 100px rgba(200,184,255,0.5);
+  animation: pulseStar 4s ease-in-out infinite;
+}
+
+@keyframes pulseStar {
+  0%,100% { transform: translate(-50%,-50%) scale(1); box-shadow: 0 0 20px #fff, 0 0 60px #fff; }
+  50%      { transform: translate(-50%,-50%) scale(2.2); box-shadow: 0 0 40px #fff, 0 0 100px #fff, 0 0 160px rgba(200,184,255,0.3); }
+}
+
+/* ── SECTION DIVIDER ── */
+.divider {
+  width: 1px;
+  height: 80px;
+  background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.15), transparent);
+  margin: 0 auto;
+}
+
+/* ── PRODUCTS ── */
+.products {
+  padding: 120px 0 140px;
+  background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.015) 50%, transparent);
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 80px;
+}
+
+.section-eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: rgba(200,184,255,0.5);
+  margin-bottom: 20px;
+}
+
+.section-title {
+  font-size: clamp(2.5rem, 7vw, 5.5rem);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 0.92;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.products-grid {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 40px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3px;
+}
+
+.product-card {
+  position: relative;
+  cursor: none;
+  overflow: hidden;
+  background: #0a0a0a;
+}
+
+.product-image-wrap {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 3/4;
+}
+
+.product-image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.5s ease;
+  filter: grayscale(15%) brightness(0.85);
+}
+
+.product-card:hover .product-image-wrap img {
+  transform: scale(1.07);
+  filter: grayscale(0%) brightness(1);
+}
+
+.product-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(5,5,5,0.85) 0%, transparent 50%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 32px;
+  transition: opacity 0.4s ease;
+}
+
+.product-tag {
+  font-size: 9px;
+  letter-spacing: 0.25em;
+  color: rgba(200,184,255,0.7);
+  margin-bottom: 8px;
+}
+
+.product-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.product-price {
+  font-size: 13px;
+  color: rgba(255,255,255,0.5);
+  margin-top: 8px;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+}
+
+.product-cta {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity 0.3s ease, transform 0.3s ease, background 0.3s ease;
+}
+
+.product-card:hover .product-cta {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.product-cta:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+/* ── MANIFESTO ── */
+.manifesto {
+  padding: 160px 0;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.manifesto-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.manifesto-line {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(3rem, 7vw, 7rem);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 0.9;
+  color: rgba(255,255,255,0.08);
+  transition: color 0.4s ease;
+  cursor: default;
+  display: block;
+  padding: 8px 0;
+}
+
+.manifesto-line.active,
+.manifesto-line:hover {
+  color: white;
+}
+
+.manifesto-line span {
+  color: rgba(200,184,255,0.6);
+}
+
+/* ── SS26 DROP BANNER ── */
+.drop-banner {
+  padding: 120px 0;
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.drop-rings {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.drop-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.04);
+}
+
+.drop-ring:nth-child(1) { width: 900px; height: 900px; }
+.drop-ring:nth-child(2) { width: 620px; height: 620px; border-color: rgba(200,184,255,0.04); }
+.drop-ring:nth-child(3) { width: 360px; height: 360px; }
+
+.drop-content {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.drop-label {
+  display: inline-block;
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  color: rgba(200,184,255,0.6);
+  border: 1px solid rgba(200,184,255,0.2);
+  padding: 7px 18px;
+  margin-bottom: 32px;
+}
+
+.drop-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(4rem, 12vw, 10rem);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 0.88;
+  margin-bottom: 24px;
+}
+
+.drop-sub {
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  color: rgba(255,255,255,0.3);
+  font-weight: 300;
+}
+
+/* ── FOOTER ── */
+.footer-links {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 80px 40px 60px;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 60px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.footer-brand-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+}
+
+.footer-tagline {
+  font-size: 12px;
+  color: rgba(255,255,255,0.25);
+  line-height: 1.7;
+  font-weight: 300;
+  max-width: 260px;
+}
+
+.footer-col-label {
+  font-size: 9px;
+  letter-spacing: 0.25em;
+  color: rgba(255,255,255,0.25);
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
+.footer-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer-col ul a {
+  text-decoration: none;
+  font-size: 13px;
+  color: rgba(255,255,255,0.45);
+  transition: color 0.25s;
+  cursor: none;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+}
+
+.footer-col ul a:hover { color: white; }
+
+.footer-bottom {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(255,255,255,0.04);
+}
+
+.footer-copy {
+  font-size: 11px;
+  color: rgba(255,255,255,0.2);
+  letter-spacing: 0.05em;
+  font-weight: 300;
+}
+
+.footer-accent-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(200,184,255,0.4);
+  box-shadow: 0 0 10px rgba(200,184,255,0.3);
+}
+
+/* ── SCROLL REVEAL ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── TICKER ── */
+.ticker-wrap {
+  overflow: hidden;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding: 14px 0;
+  background: rgba(255,255,255,0.02);
+}
+
+.ticker-track {
+  display: flex;
+  gap: 0;
+  animation: ticker 20s linear infinite;
+  width: max-content;
+}
+
+.ticker-item {
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  color: rgba(255,255,255,0.25);
+  padding: 0 40px;
+  white-space: nowrap;
+  font-weight: 400;
+}
+
+.ticker-item span {
+  color: rgba(200,184,255,0.4);
+  margin: 0 8px;
+}
+
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@media (max-width: 768px) {
+  .products-grid { grid-template-columns: 1fr; gap: 3px; }
+  .nav-links { display: none; }
+  .nav-inner { padding: 18px 24px; }
+  .footer-links { grid-template-columns: 1fr 1fr; gap: 40px; padding: 60px 24px 40px; }
+  .footer-bottom { padding: 20px 24px; flex-direction: column; gap: 12px; text-align: center; }
+  .manifesto-inner { padding: 0 24px; }
+  .drop-content { padding: 0 24px; }
+}
+</style>
+</head>
+
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+<div id="stars" class="stars"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <div class="text-2xl font-black logo-font tracking-tight">HELLSTAR</div>
+    <div class="nav-links">
+      <a href="#">SHOP</a>
+      <a href="#">DROPS</a>
+      <a href="#">LOOKBOOK</a>
+      <a href="#">CULT</a>
+    </div>
+    <div class="nav-actions">
+      <button class="cart-btn">BAG (0)</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="nebula"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">SS26 COLLECTION — AVAILABLE NOW</p>
+    <h1 class="hero-logo logo-font">HELLSTAR</h1>
+    <p class="hero-sub">BORN IN THE VOID. DESTINED TO BURN.</p>
+    <div class="hero-actions">
+      <button class="hell-btn hell-btn-primary">SHOP NOW</button>
+      <button class="hell-btn">ENTER THE CULT</button>
+    </div>
+  </div>
+  <div class="central-star"></div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-track">
+    <span class="ticker-item">FREE SHIPPING OVER $200 <span>✦</span></span>
+    <span class="ticker-item">SS26 COLLECTION <span>✦</span></span>
+    <span class="ticker-item">VOID SERIES — LIMITED RUN <span>✦</span></span>
+    <span class="ticker-item">NEW DROPS EVERY FRIDAY <span>✦</span></span>
+    <span class="ticker-item">JOIN THE CULT <span>✦</span></span>
+    <span class="ticker-item">FREE SHIPPING OVER $200 <span>✦</span></span>
+    <span class="ticker-item">SS26 COLLECTION <span>✦</span></span>
+    <span class="ticker-item">VOID SERIES — LIMITED RUN <span>✦</span></span>
+    <span class="ticker-item">NEW DROPS EVERY FRIDAY <span>✦</span></span>
+    <span class="ticker-item">JOIN THE CULT <span>✦</span></span>
+  </div>
+</div>
+
+<!-- PRODUCTS -->
+<section class="products">
+  <div class="section-header">
+    <p class="section-eyebrow">— LATEST DROP</p>
+    <h2 class="section-title logo-font reveal">LATEST<br>DROP</h2>
+  </div>
+
+  <div class="products-grid">
+    <div class="product-card reveal">
+      <div class="product-image-wrap">
+        <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=1000" alt="Void Hoodie">
+        <div class="product-overlay">
+          <p class="product-tag">VOID SERIES — 001</p>
+          <h3 class="product-name">VOID<br>HOODIE</h3>
+          <p class="product-price">$120</p>
+        </div>
+        <div class="product-cta">+</div>
+      </div>
+    </div>
+
+    <div class="product-card reveal" style="transition-delay:0.15s">
+      <div class="product-image-wrap">
+        <img src="https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=1000" alt="Star Tee">
+        <div class="product-overlay">
+          <p class="product-tag">CULT EDITION — 002</p>
+          <h3 class="product-name">STAR<br>TEE</h3>
+          <p class="product-price">$60</p>
+        </div>
+        <div class="product-cta">+</div>
+      </div>
+    </div>
+
+    <div class="product-card reveal" style="transition-delay:0.3s">
+      <div class="product-image-wrap">
+        <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=1000" alt="Cult Pants">
+        <div class="product-overlay">
+          <p class="product-tag">HELLSTAR CORE — 003</p>
+          <h3 class="product-name">CULT<br>PANTS</h3>
+          <p class="product-price">$140</p>
+        </div>
+        <div class="product-cta">+</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MANIFESTO -->
+<section class="manifesto">
+  <div class="manifesto-inner">
+    <span class="manifesto-line" data-reveal>HELLSTAR IS MORE</span>
+    <span class="manifesto-line" data-reveal>THAN CLOTHING.<span>*</span></span>
+    <span class="manifesto-line" data-reveal style="color:rgba(255,255,255,0.04)">IT'S A SYMBOL.</span>
+    <span class="manifesto-line" data-reveal style="color:rgba(255,255,255,0.04)">BORN TO SHINE.</span>
+    <span class="manifesto-line" data-reveal style="color:rgba(255,255,255,0.04)">DESTINED <span>TO BURN.</span></span>
+  </div>
+</section>
+
+<!-- SS26 DROP BANNER -->
+<div class="drop-banner">
+  <div class="drop-rings">
+    <div class="drop-ring"></div>
+    <div class="drop-ring"></div>
+    <div class="drop-ring"></div>
+  </div>
+  <div class="drop-content reveal">
+    <div class="drop-label">NEW SEASON</div>
+    <h2 class="drop-title logo-font">SS26</h2>
+    <p class="drop-sub">A NEW COSMIC ERA</p>
+    <div style="margin-top:44px">
+      <button class="hell-btn">EXPLORE COLLECTION</button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER LINKS -->
+<footer>
+  <div class="footer-links">
+    <div>
+      <div class="footer-brand-name logo-font">HELLSTAR</div>
+      <p class="footer-tagline">Clothing for those who walk between light and darkness. Between stars and the void.</p>
+    </div>
+    <div class="footer-col">
+      <p class="footer-col-label">SHOP</p>
+      <ul>
+        <li><a href="#">Hoodies</a></li>
+        <li><a href="#">T-Shirts</a></li>
+        <li><a href="#">Pants</a></li>
+        <li><a href="#">Accessories</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <p class="footer-col-label">COLLECTIONS</p>
+      <ul>
+        <li><a href="#">SS26</a></li>
+        <li><a href="#">Void Series</a></li>
+        <li><a href="#">Cult Edition</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <p class="footer-col-label">FOLLOW</p>
+      <ul>
+        <li><a href="#">Instagram</a></li>
+        <li><a href="#">Twitter</a></li>
+        <li><a href="#">Discord</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p class="footer-copy">© 2026 HELLSTAR. ALL RIGHTS RESERVED IN THIS DIMENSION.</p>
+    <div class="footer-accent-dot"></div>
+  </div>
+</footer>
+
+<script>
+/* ── CURSOR ── */
+const cursor = document.getElementById('cursor');
+const cursorRing = document.getElementById('cursor-ring');
+let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+
+document.addEventListener('mousemove', (e) => {
+  mouseX = e.clientX; mouseY = e.clientY;
+  cursor.style.left = mouseX + 'px';
+  cursor.style.top  = mouseY + 'px';
+});
+
+function animateRing() {
+  ringX += (mouseX - ringX) * 0.12;
+  ringY += (mouseY - ringY) * 0.12;
+  cursorRing.style.left = ringX + 'px';
+  cursorRing.style.top  = ringY + 'px';
+  requestAnimationFrame(animateRing);
+}
+animateRing();
+
+/* ── NAVBAR SCROLL ── */
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('nav-scrolled', window.scrollY > 50);
+});
+
+/* ── STARS ── */
+function createStars() {
+  const container = document.getElementById('stars');
+  for (let i = 0; i < 320; i++) {
+    const s = document.createElement('div');
+    s.classList.add('star');
+    const size = Math.random() * 2.5 + 0.5;
+    s.style.cssText = `
+      width:${size}px; height:${size}px;
+      left:${Math.random()*100}%;
+      top:${Math.random()*100}%;
+      opacity:${Math.random()};
+      animation-delay:${Math.random()*6}s;
+      animation-duration:${Math.random()*4+3}s;
+    `;
+    container.appendChild(s);
+  }
+}
+createStars();
+
+/* ── SHOOTING STARS ── */
+function spawnShooter() {
+  const container = document.getElementById('stars');
+  const el = document.createElement('div');
+  el.classList.add('shooting-star');
+  el.style.left = Math.random() * window.innerWidth + 'px';
+  el.style.top  = Math.random() * 250 + 'px';
+  el.style.animationDuration = (Math.random() * 2 + 2.5) + 's';
+  container.appendChild(el);
+  setTimeout(() => el.remove(), 5000);
+}
+setInterval(spawnShooter, 3000);
+
+/* ── PARALLAX ON MOUSEMOVE ── */
+document.addEventListener('mousemove', (e) => {
+  const x = (e.clientX / window.innerWidth - 0.5);
+  const y = (e.clientY / window.innerHeight - 0.5);
+  document.querySelectorAll('.star').forEach((star, i) => {
+    if (i % 10 === 0) star.style.transform = `translate(${x*18}px,${y*18}px)`;
+  });
+  const logo = document.querySelector('.hero-logo');
+  if (logo) logo.style.transform = `translate(${x*14}px,${y*14}px)`;
+});
+
+/* ── SCROLL REVEAL ── */
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+/* ── MANIFESTO REVEAL ── */
+const manifestoObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const lines = entry.target.querySelectorAll('.manifesto-line');
+      lines.forEach((line, i) => {
+        setTimeout(() => line.classList.add('active'), i * 200);
+      });
+      manifestoObs.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.3 });
+const manifesto = document.querySelector('.manifesto-inner');
+if (manifesto) manifestoObs.observe(manifesto);
+
+/* ── PRODUCT CARD GLOW ── */
+document.querySelectorAll('.product-card').forEach(card => {
+  card.addEventListener('mousemove', (e) => {
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    card.style.boxShadow = `inset 0 0 80px rgba(200,184,255,0.04)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.boxShadow = 'none';
+  });
+});
+
+/* ── CENTRAL STAR PULSE ── */
+setInterval(() => {
+  const star = document.querySelector('.central-star');
+  if (!star) return;
+  star.animate([
+    { filter: 'brightness(1)' },
+    { filter: 'brightness(3)' },
+    { filter: 'brightness(1)' }
+  ], { duration: 800, easing: 'ease-in-out' });
+}, 5000);
+
+/* ── AMBIENT FLASH ── */
+setInterval(() => {
+  const flash = document.createElement('div');
+  Object.assign(flash.style, {
+    position:'fixed', inset:'0',
+    pointerEvents:'none',
+    background:'radial-gradient(circle, rgba(200,184,255,0.04), transparent 60%)',
+    opacity:'0', transition:'opacity 1s ease', zIndex:'50'
+  });
+  document.body.appendChild(flash);
+  setTimeout(() => flash.style.opacity = '1', 50);
+  setTimeout(() => flash.style.opacity = '0', 600);
+  setTimeout(() => flash.remove(), 1600);
+}, 18000);
+
+/* ── FADE IN ── */
+window.addEventListener('load', () => {
+  document.body.animate([{ opacity:0 },{ opacity:1 }], { duration:1000, fill:'forwards' });
+});
+</script>
+</body>
+</html>
